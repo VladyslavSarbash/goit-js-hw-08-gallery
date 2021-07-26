@@ -72,7 +72,6 @@ const btnCloseModalRef = document.querySelector(
   'button[data-action="close-lightbox"]'
 );
 
-
 function createItemGallery(array) {
   return array
     .map(
@@ -101,10 +100,14 @@ galleryRef.insertAdjacentHTML('beforeend', insertGalleryItem);
 function modalRemoveListAndAtr() {
   modalRef.classList.remove('is-open');
   modalImgRef.removeAttribute('src');
+  window.removeEventListener('keydown', modalCloseEsc);
+  window.removeEventListener('keydown', thumbImgModal);
 }
 
 function modalOpen(event) {
   event.preventDefault();
+
+  modalRef.classList.add('is-open');
 
   if (event.target.nodeName !== 'IMG') {
     return;
@@ -116,7 +119,8 @@ function modalOpen(event) {
     }
   });
 
-  modalRef.classList.add('is-open');
+  window.addEventListener('keydown', modalCloseEsc);
+  window.addEventListener('keydown', thumbImgModal);
 }
 
 function modalClose() {
@@ -132,6 +136,7 @@ function modalCloseOverlay(event) {
 }
 
 function modalCloseEsc(event) {
+  console.log(event);
   if (event.code !== 'Escape') {
     return;
   }
@@ -142,16 +147,15 @@ function modalCloseEsc(event) {
 const newArrayOriginalImg = galleryItems.map(item => item.original);
 
 function thumbImgModal(event) {
-  if(event.code !== "ArrowLeft" && event.code !== "ArrowRight") {
-    return
-  }
-
-  const getAtrSrc = modalImgRef.getAttribute("src");
+  const getAtrSrc = modalImgRef.getAttribute('src');
   const indexImg = newArrayOriginalImg.indexOf(getAtrSrc);
 
-  if(event.code === 'ArrowLeft' && indexImg > 0) {
+  if (event.code === 'ArrowLeft' && indexImg > 0) {
     return modalImgRef.setAttribute('src', newArrayOriginalImg[indexImg - 1]);
-  } else if (event.code === 'ArrowRight' && indexImg < newArrayOriginalImg.length - 1) {
+  } else if (
+    event.code === 'ArrowRight' &&
+    indexImg < newArrayOriginalImg.length - 1
+  ) {
     return modalImgRef.setAttribute('src', newArrayOriginalImg[indexImg + 1]);
   }
 }
@@ -159,5 +163,3 @@ function thumbImgModal(event) {
 galleryRef.addEventListener('click', modalOpen);
 btnCloseModalRef.addEventListener('click', modalClose);
 modalOverlayRef.addEventListener('click', modalCloseOverlay);
-window.addEventListener('keydown', modalCloseEsc);
-window.addEventListener('keydown', thumbImgModal);
