@@ -114,7 +114,7 @@ function modalOpen(event) {
   }
 
   galleryItems.find(item => {
-    if (item.description === event.target.alt) {
+    if (item.preview === event.target.src) {
       return modalImgRef.setAttribute('src', item.original);
     }
   });
@@ -148,15 +148,28 @@ const newArrayOriginalImg = galleryItems.map(item => item.original);
 
 function thumbImgModal(event) {
   const getAtrSrc = modalImgRef.getAttribute('src');
-  const indexImg = newArrayOriginalImg.indexOf(getAtrSrc);
+  let indexImg = newArrayOriginalImg.indexOf(getAtrSrc);
 
-  if (event.code === 'ArrowLeft' && indexImg > 0) {
-    return modalImgRef.setAttribute('src', newArrayOriginalImg[indexImg - 1]);
-  } else if (
+  if (
     event.code === 'ArrowRight' &&
     indexImg < newArrayOriginalImg.length - 1
   ) {
     return modalImgRef.setAttribute('src', newArrayOriginalImg[indexImg + 1]);
+  }
+
+  if (event.code === 'ArrowLeft' && indexImg > 0) {
+    return modalImgRef.setAttribute('src', newArrayOriginalImg[indexImg - 1]);
+  }
+
+  if (
+    event.code === 'ArrowRight' &&
+    indexImg === newArrayOriginalImg.length - 1
+  ) {
+    return modalImgRef.setAttribute('src', newArrayOriginalImg[0])
+  }
+
+  if (event.code === 'ArrowLeft' && indexImg === 0) {
+    return modalImgRef.setAttribute('src', newArrayOriginalImg[newArrayOriginalImg.length - 1]);
   }
 }
 
